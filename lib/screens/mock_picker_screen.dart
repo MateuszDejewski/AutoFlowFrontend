@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../modules/client_app/client_app.dart';
+import '../modules/mechanic_app/screens/mechanic_tasks_screen.dart';
 import '../theme/app_colors.dart';
 
 class MockPickerScreen extends StatelessWidget {
@@ -34,10 +35,15 @@ class MockPickerScreen extends StatelessWidget {
                     onTap: () => openClientApp(context),
                   ),
                   const SizedBox(height: 12),
-                  const _MockOption(
+                  _MockOption(
                     icon: Icons.desktop_windows_rounded,
-                    title: 'Aplikacja webowa · Panel warsztatu',
-                    enabled: false,
+                    title: 'Panel warsztatu · Zadania mechanika',
+                    onTap:
+                        () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const MechanicTasksScreen(),
+                          ),
+                        ),
                   ),
                 ],
               ),
@@ -50,17 +56,11 @@ class MockPickerScreen extends StatelessWidget {
 }
 
 class _MockOption extends StatelessWidget {
-  const _MockOption({
-    required this.icon,
-    required this.title,
-    this.onTap,
-    this.enabled = true,
-  });
+  const _MockOption({required this.icon, required this.title, this.onTap});
 
   final IconData icon;
   final String title;
   final VoidCallback? onTap;
-  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -68,39 +68,29 @@ class _MockOption extends StatelessWidget {
       color: Colors.white,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
-        onTap: enabled ? onTap : null,
+        onTap: onTap,
         borderRadius: BorderRadius.circular(14),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
           child: Row(
             children: [
-              Icon(
-                icon,
-                color: enabled ? AppColors.teal : AppColors.muted,
-                size: 22,
-              ),
+              Icon(icon, color: AppColors.teal, size: 22),
               const SizedBox(width: 14),
               Expanded(
                 child: Text(
                   title,
                   style: TextStyle(
-                    color: enabled ? AppColors.ink : AppColors.muted,
+                    color: AppColors.ink,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
-              if (enabled)
-                const Icon(
-                  Icons.arrow_forward_rounded,
-                  color: AppColors.teal,
-                  size: 20,
-                )
-              else
-                const Text(
-                  'Wkrótce',
-                  style: TextStyle(color: AppColors.muted, fontSize: 12),
-                ),
+              const Icon(
+                Icons.arrow_forward_rounded,
+                color: AppColors.teal,
+                size: 20,
+              ),
             ],
           ),
         ),
