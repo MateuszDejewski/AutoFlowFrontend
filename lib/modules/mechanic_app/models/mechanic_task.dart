@@ -1,5 +1,15 @@
 enum MechanicTaskStatus { received, inProgress, waitingForParts, ready }
 
+enum MechanicTaskPriority { low, normal, high }
+
+extension MechanicTaskPriorityPresentation on MechanicTaskPriority {
+  String get label => switch (this) {
+    MechanicTaskPriority.low => 'Niski',
+    MechanicTaskPriority.normal => 'Normalny',
+    MechanicTaskPriority.high => 'Wysoki',
+  };
+}
+
 extension MechanicTaskStatusPresentation on MechanicTaskStatus {
   String get label => switch (this) {
     MechanicTaskStatus.received => 'Przyjęte',
@@ -17,6 +27,9 @@ class MechanicTask {
     required this.registrationNumber,
     required this.stationName,
     required this.description,
+    required this.priority,
+    required this.mileageAtIntake,
+    required this.deadline,
     required this.startTime,
     required this.endTime,
     required this.status,
@@ -29,6 +42,9 @@ class MechanicTask {
   final String registrationNumber;
   final String stationName;
   final String description;
+  final MechanicTaskPriority priority;
+  final int mileageAtIntake;
+  final DateTime deadline;
   final DateTime startTime;
   final DateTime endTime;
   final MechanicTaskStatus status;
@@ -42,6 +58,9 @@ class MechanicTask {
       registrationNumber: registrationNumber,
       stationName: stationName,
       description: description,
+      priority: priority,
+      mileageAtIntake: mileageAtIntake,
+      deadline: deadline,
       startTime: startTime,
       endTime: endTime,
       status: status ?? this.status,

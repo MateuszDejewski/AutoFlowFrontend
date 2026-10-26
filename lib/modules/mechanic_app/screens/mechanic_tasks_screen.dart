@@ -562,125 +562,180 @@ class _MechanicTaskDetailsScreenState extends State<MechanicTaskDetailsScreen> {
         ),
       ),
       body: SafeArea(
-        top: false,
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 680),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-              children: [
-                _VehicleHeading(task: task),
-                const SizedBox(height: 20),
-                _DetailSection(
-                  title: 'SZCZEGÓŁY ZLECENIA',
-                  child: Column(
-                    children: [
-                      _InfoRow(
-                        icon: Icons.person_outline_rounded,
-                        label: 'Klient',
-                        value: task.customerName,
-                      ),
-                      const SizedBox(height: 14),
-                      _InfoRow(
-                        icon: Icons.access_time_rounded,
-                        label: 'Zaplanowany czas',
-                        value:
-                            '${_formatTime(task.startTime)}–${_formatTime(task.endTime)}',
-                      ),
-                      const SizedBox(height: 14),
-                      _InfoRow(
-                        icon: Icons.home_repair_service_outlined,
-                        label: 'Stanowisko',
-                        value: task.stationName,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 14),
-                _DetailSection(
-                  title: 'OPIS USTERKI',
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      task.description,
-                      style: const TextStyle(
-                        color: AppColors.ink,
-                        fontSize: 14,
-                        height: 1.55,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 14),
-                _DetailSection(
-                  title: 'STATUS ZLECENIA',
-                  child: DropdownButtonFormField<MechanicTaskStatus>(
-                    initialValue: _status,
-                    decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.sync_alt_rounded),
-                    ),
-                    items:
-                        MechanicTaskStatus.values
-                            .map(
-                              (status) => DropdownMenuItem(
-                                value: status,
-                                child: Text(status.label),
-                              ),
-                            )
-                            .toList(),
-                    onChanged: (status) {
-                      if (status != null) setState(() => _status = status);
-                    },
-                  ),
-                ),
-                const SizedBox(height: 14),
-                _DetailSection(
-                  title: 'NOTATKA KOŃCOWA',
-                  child: TextField(
-                    controller: _noteController,
-                    minLines: 4,
-                    maxLines: 7,
-                    textCapitalization: TextCapitalization.sentences,
-                    decoration: const InputDecoration(
-                      hintText:
-                          'Opisz wykonane prace, wymienione części lub zalecenia dla klienta…',
-                      alignLabelWithHint: true,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 640),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Align(
+              alignment: Alignment.topCenter,
               child: SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: FilledButton.icon(
-                  onPressed: _save,
-                  icon: const Icon(Icons.check_rounded),
-                  label: const Text('Zapisz zmiany'),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppColors.teal,
-                    foregroundColor: Colors.white,
-                    textStyle: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
+                width: constraints.maxWidth < 680 ? null : 680,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+                  children: [
+                    Text(
+                      'Szczegóły zlecenia',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: AppColors.ink,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                    const SizedBox(height: 14),
+                    _VehicleHeading(task: task),
+                    const SizedBox(height: 14),
+                    _DetailSection(
+                      title: 'SZCZEGÓŁY ZLECENIA',
+                      child: Column(
+                        children: [
+                          _InfoRow(
+                            icon: Icons.tag_rounded,
+                            label: 'Numer zlecenia',
+                            value: task.orderNumber,
+                          ),
+                          const SizedBox(height: 14),
+                          _InfoRow(
+                            icon: Icons.person_outline_rounded,
+                            label: 'Klient',
+                            value: task.customerName,
+                          ),
+                          const SizedBox(height: 14),
+                          _InfoRow(
+                            icon: Icons.flag_outlined,
+                            label: 'Priorytet',
+                            value: task.priority.label,
+                          ),
+                          const SizedBox(height: 14),
+                          _InfoRow(
+                            icon: Icons.speed_rounded,
+                            label: 'Przebieg przy przyjęciu',
+                            value: '${task.mileageAtIntake} km',
+                          ),
+                          const SizedBox(height: 14),
+                          _InfoRow(
+                            icon: Icons.event_outlined,
+                            label: 'Termin realizacji',
+                            value: _formatDate(task.deadline),
+                          ),
+                          const SizedBox(height: 14),
+                          _InfoRow(
+                            icon: Icons.access_time_rounded,
+                            label: 'Zaplanowany czas',
+                            value:
+                                '${_formatTime(task.startTime)}–${_formatTime(task.endTime)}',
+                          ),
+                          const SizedBox(height: 14),
+                          _InfoRow(
+                            icon: Icons.home_repair_service_outlined,
+                            label: 'Stanowisko',
+                            value: task.stationName,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 14),
+                    _DetailSection(
+                      title: 'OPIS USTERKI',
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          task.description,
+                          style: const TextStyle(
+                            color: AppColors.ink,
+                            fontSize: 14,
+                            height: 1.55,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _DetailSection(
+                      title: 'STATUS ZLECENIA',
+                      child: DropdownButtonFormField<MechanicTaskStatus>(
+                        initialValue: _status,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.sync_alt_rounded),
+                        ),
+                        items:
+                            MechanicTaskStatus.values
+                                .map(
+                                  (status) => DropdownMenuItem(
+                                    value: status,
+                                    child: Text(status.label),
+                                  ),
+                                )
+                                .toList(),
+                        onChanged: (status) {
+                          if (status != null) setState(() => _status = status);
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _DetailSection(
+                      title: 'ZDJĘCIA ZLECENIA',
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Dodawanie zdjęć będzie dostępne wkrótce.',
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.add_a_photo_outlined),
+                          label: const Text('Dodaj zdjęcia'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.teal,
+                            side: const BorderSide(color: AppColors.teal),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _DetailSection(
+                      title: 'NOTATKA KOŃCOWA',
+                      child: TextField(
+                        controller: _noteController,
+                        minLines: 4,
+                        maxLines: 7,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: const InputDecoration(
+                          hintText:
+                              'Opisz wykonane prace, wymienione części lub zalecenia dla klienta…',
+                          alignLabelWithHint: true,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: FilledButton.icon(
+                        onPressed: _save,
+                        icon: const Icon(Icons.check_rounded),
+                        label: const Text('Zapisz zmiany'),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.teal,
+                          foregroundColor: Colors.white,
+                          textStyle: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
