@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../modules/client_app/client_app.dart';
+import '../modules/manager_app/manager_app.dart';
+import '../modules/manager_app/screens/inventory_records_screen.dart';
 import '../modules/mechanic_app/screens/mechanic_tasks_screen.dart';
 import '../theme/app_colors.dart';
 
@@ -38,12 +40,27 @@ class MockPickerScreen extends StatelessWidget {
                   _MockOption(
                     icon: Icons.desktop_windows_rounded,
                     title: 'Panel warsztatu · Zadania mechanika',
-                    onTap:
-                        () => Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => const MechanicTasksScreen(),
-                          ),
-                        ),
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const MechanicTasksScreen(),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _MockOption(
+                    icon: Icons.calendar_month_rounded,
+                    title: 'Panel kierownika · Kalendarz i stanowiska',
+                    onTap: () => openManagerApp(context),
+                  ),
+                  const SizedBox(height: 12),
+                  _MockOption(
+                    icon: Icons.inventory_2_outlined,
+                    title: 'Panel kierownika · Ewidencja części',
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const InventoryRecordsScreen(),
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -79,7 +96,7 @@ class _MockOption extends StatelessWidget {
               Expanded(
                 child: Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.ink,
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
